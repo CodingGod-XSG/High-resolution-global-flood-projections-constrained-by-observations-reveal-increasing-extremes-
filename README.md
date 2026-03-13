@@ -41,5 +41,5 @@ numpy, pandas, scikit-learn, rasterio, joblib, tqdm
 | Observation-based design floods | Zhao et al. (2021), HESS |
 
 ## Contact
-Code available upon request:  
-jingshan@bnu.edu.cn / zhao.g.eb91@m.isct.ac.jp
+For questions regarding the code, please contact:    
+202331470002@mail.bnu.edu.cn/xu13667185978@gmail.com/jingshan@bnu.edu.cn / zhao.g.eb91@m.isct.ac.jp
