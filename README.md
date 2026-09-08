@@ -4,6 +4,11 @@ Code for: "High-resolution global flood projections constrained by observations
 reveal increasing extremes", published in Communications Earth & Environment
 (Nature Portfolio).
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19357539.svg)](https://doi.org/10.5281/zenodo.19357539)
+
+Data: <https://doi.org/10.5281/zenodo.19357539> (Zenodo; the concept DOI always
+resolves to the latest version).
+
 ## Overview
 This repository contains core code implementing the three-step framework for 
 global observation-constrained design flood projections at 1-km resolution.
@@ -59,6 +64,13 @@ numpy, pandas, scikit-learn, rasterio, joblib, tqdm, matplotlib, geopandas
 | GRADES bias-corrected runoff | Lin et al. (2019), WRR |
 | MERIT Hydro river network | Yamazaki et al. (2019), WRR |
 | Observation-based design floods | Zhao et al. (2021), HESS |
+
+## Data Availability
+The design-flood projection archives and the source data for the main figures
+(inputs + per-region statistics for `plotting/Figure1.py`–`Figure3.py`) are on
+Zenodo: **https://doi.org/10.5281/zenodo.19357539** (concept DOI → latest version).
+Set `EFBC_PLOTDATA_DIR` to the unpacked `Figure_1/`,`Figure_2/`,`Figure_3/` folders
+to run the plotting scripts.
 
 ## Contact
 For questions regarding the code, please contact:    
