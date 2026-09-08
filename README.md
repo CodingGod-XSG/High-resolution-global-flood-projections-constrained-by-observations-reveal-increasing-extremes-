@@ -36,8 +36,14 @@ Scripts that reproduce the three main figures from the projection outputs.
 | `plotting/Figure3.py` | Fig. 3 | Flood return-period change: corrected map, difference map, and signed-difference box plots / under- vs over-estimation stacked bars by climate zone and continent |
 
 Maps use a 25× block resample for display; statistics use every native 1-km pixel.
-The input rasters and the per-region statistics tables these scripts read/write are
-archived separately (see Data Sources).
+
+The input rasters and per-region statistics tables live in the plotting-data archive
+(`efbc_PlotData/`, laid out as `Figure_1/`, `Figure_2/`, `Figure_3/`; see Data Sources).
+Each script takes its paths from a single `DATA_DIR` at the top of the file — set the
+`EFBC_PLOTDATA_DIR` environment variable to the unpacked archive (or edit `DATA_DIR`),
+then run e.g. `python plotting/Figure2.py`. Outputs go to `<Figure_x>/output/`.
+Continent masks come from Natural Earth via `geopandas`; on `geopandas` ≥ 1.0 set
+`NATURALEARTH_SHP` to a local `ne_110m_admin_0_countries.shp`.
 
 ## Dependencies
 ```

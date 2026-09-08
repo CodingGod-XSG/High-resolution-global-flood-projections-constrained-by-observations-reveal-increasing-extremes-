@@ -1,3 +1,24 @@
+"""
+Figure 2 - Multi-model uncertainty (coefficient of variation).
+
+Panels: (a) uncorrected CV map, (b) bias-corrected CV map, (c) box plot by
+Koppen-Geiger climate zone, (d) per-river CV box plot (version 1) or
+continental CV box plot (version 2). A watershed-scale table is also written.
+Maps use a 25x block resample for display only; the box-plot statistics use
+every native ~1 km pixel.
+
+Usage
+-----
+Download and unpack the plotting-data archive (Zenodo concept DOI
+10.5281/zenodo.19357539), then either set the environment variable
+EFBC_PLOTDATA_DIR to the unpacked "efbc_PlotData" folder or edit DATA_DIR below.
+Continent masks come from Natural Earth via geopandas; on geopandas >= 1.0 set
+NATURALEARTH_SHP to a local ne_110m_admin_0_countries.shp.
+
+    python Figure2.py
+
+Figure PNGs and statistics_*.csv are written to <Figure_2>/output.
+"""
 import os
 import numpy as np
 import pandas as pd
@@ -19,14 +40,20 @@ warnings.filterwarnings('ignore')
 # ================================
 # CONFIGURATION
 # ================================
+# Root of the unpacked "efbc_PlotData" archive; override with EFBC_PLOTDATA_DIR.
+# Defaults to the folder holding this script.
+DATA_DIR = os.environ.get('EFBC_PLOTDATA_DIR', os.path.dirname(os.path.abspath(__file__)))
+FIG_DIR = os.path.join(DATA_DIR, 'Figure_2')
+OUTPUT_DIR = os.environ.get('EFBC_OUTPUT_DIR', os.path.join(FIG_DIR, 'output'))
+
 CONFIG = {
     'paths': {
-        'simulated_cv': r'F:\Kody\Data\6_QDM_DF_Statics\6_ModelUncertaintity\1_UncertaintityMetricsCal\simulated_multi_model_CV.tif',
-        'corrected_cv': r'F:\Kody\Data\6_QDM_DF_Statics\6_ModelUncertaintity\1_UncertaintityMetricsCal\corrected_multi_model_CV.tif',
-        'climate_zones': r'E:\Code\Pycharm\DF_UnCC\Data\ClimateZone\koppen_geiger_GloH20tif\ClimateZone5ClassMerge.shp',
-        'catchment_area': r'F:\Kody\Data\6_QDM_DF_Pred\ACCESS\1_Input\2_RF_Pred\1_StaticFa\2_Mask\CA.tif',
-        'river_data': r'F:\Kody\Data\6_QDM_DF_Statics\7_2_ComWithISIMIP_Advanced\1_Ensemble\1_DataMerge\Fut_Value.xlsx',
-        'output_dir': r'F:\Kody\Data\6_QDM_DF_Statics\8_PlotOptimized\3.2_Results_Optimized2-fullSample'
+        'simulated_cv': os.path.join(FIG_DIR, 'uncorrected_multi-model-CV.tif'),
+        'corrected_cv': os.path.join(FIG_DIR, 'bias-corrected_multi-model-CV.tif'),
+        'climate_zones': os.path.join(FIG_DIR, 'climate-zones_Koppen-Geiger-5class.shp'),
+        'catchment_area': os.path.join(FIG_DIR, 'catchment-area_km2.tif'),
+        'river_data': os.path.join(FIG_DIR, 'major-rivers_future-flood-ensemble.xlsx'),
+        'output_dir': OUTPUT_DIR
     },
     'data_types': {
         'Simulated': {'color': '#E07B39', 'label': 'Uncorrected'},
@@ -508,10 +535,14 @@ def create_composite_figure():
 
     # Continents
     print("  > Rasterizing continents...")
-    try:
-        world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
-    except Exception:
-        world = gpd.read_file("naturalearth_lowres")
+    ne_path = os.environ.get('NATURALEARTH_SHP')
+    if ne_path:
+        world = gpd.read_file(ne_path)
+    else:
+        try:
+            world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+        except Exception:
+            world = gpd.read_file("naturalearth_lowres")
     world_filtered, cont_labels_map = build_continent_geodata(world)
     continent_raster_full = create_raster_mask(
         world_filtered.geometry, world_filtered['cont_id'],

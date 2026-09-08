@@ -1,3 +1,24 @@
+"""
+Figure 3 - Flood return-period change.
+
+Panels: (a) corrected return-period map, (b) difference map
+(corrected - uncorrected), (c)/(d) signed-difference box plots by
+Koppen-Geiger climate zone / continent, (e)/(f) stacked bars of under- vs
+over-estimation share. Maps use a 25x block resample for display only; the
+statistics use every native ~1 km pixel.
+
+Usage
+-----
+Download and unpack the plotting-data archive (Zenodo concept DOI
+10.5281/zenodo.19357539), then either set the environment variable
+EFBC_PLOTDATA_DIR to the unpacked "efbc_PlotData" folder or edit DATA_DIR below.
+Continent masks come from Natural Earth via geopandas; on geopandas >= 1.0 set
+NATURALEARTH_SHP to a local ne_110m_admin_0_countries.shp.
+
+    python Figure3.py
+
+The figure PNG and statistics_*.csv are written to <Figure_3>/output.
+"""
 import os
 import numpy as np
 import pandas as pd
@@ -20,12 +41,18 @@ warnings.filterwarnings('ignore')
 # ================================
 # CONFIGURATION
 # ================================
+# Root of the unpacked "efbc_PlotData" archive; override with EFBC_PLOTDATA_DIR.
+# Defaults to the folder holding this script.
+DATA_DIR = os.environ.get('EFBC_PLOTDATA_DIR', os.path.dirname(os.path.abspath(__file__)))
+FIG_DIR = os.path.join(DATA_DIR, 'Figure_3')
+OUTPUT_DIR = os.environ.get('EFBC_OUTPUT_DIR', os.path.join(FIG_DIR, 'output'))
+
 CONFIG = {
     'paths': {
-        'simulated_rp': r'F:\Kody\Data\6_QDM_DF_Statics\2_ReturnPeriod\1_1_Median\sim_RP_Change.tif',
-        'corrected_rp': r'F:\Kody\Data\6_QDM_DF_Statics\2_ReturnPeriod\1_1_Median\ob_RP_Change.tif',
-        'climate_zones': r'E:\Code\Pycharm\DF_UnCC\Data\ClimateZone\koppen_geiger_GloH20tif\ClimateZone5ClassMerge.shp',
-        'output_dir': r'F:\Kody\Data\6_QDM_DF_Statics\8_PlotOptimized\3.3_Results_Optimized6_diff-box-stackedChart'
+        'simulated_rp': os.path.join(FIG_DIR, 'uncorrected_return-period-years.tif'),
+        'corrected_rp': os.path.join(FIG_DIR, 'corrected_return-period-years.tif'),
+        'climate_zones': os.path.join(FIG_DIR, 'climate-zones_Koppen-Geiger-5class.shp'),
+        'output_dir': OUTPUT_DIR
     },
     'climate_labels': ['Arid', 'Cold', 'Polar', 'Temperate', 'Tropical'],
     'continent_abbr': {
@@ -472,10 +499,14 @@ def create_composite_figure():
 
     # --- Continent Mask (full resolution) ---
     print("  > Loading continent shapefile...")
-    try:
-        world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
-    except Exception:
-        world = gpd.read_file("naturalearth_lowres")
+    ne_path = os.environ.get('NATURALEARTH_SHP')
+    if ne_path:
+        world = gpd.read_file(ne_path)
+    else:
+        try:
+            world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+        except Exception:
+            world = gpd.read_file("naturalearth_lowres")
 
     world_filtered, cont_labels_map = build_continent_geodata(world)
 

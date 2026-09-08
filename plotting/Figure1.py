@@ -1,3 +1,23 @@
+"""
+Figure 1 - Global flood-magnitude bias ratio.
+
+Panels: (a) uncorrected-cascade bias-ratio map, (b) GRADES bias-ratio map,
+(c) box plot by Koppen-Geiger climate zone, (d) box plot by continent.
+Maps use a 25x block resample for display only; the box-plot statistics use
+every native ~1 km pixel.
+
+Usage
+-----
+Download and unpack the plotting-data archive (Zenodo concept DOI
+10.5281/zenodo.19357539), then either set the environment variable
+EFBC_PLOTDATA_DIR to the unpacked "efbc_PlotData" folder or edit DATA_DIR below.
+Continent masks come from Natural Earth via geopandas; on geopandas >= 1.0 set
+NATURALEARTH_SHP to a local ne_110m_admin_0_countries.shp.
+
+    python Figure1.py
+
+Figure PNGs and statistics_*.csv are written to <Figure_1>/output.
+"""
 import os
 import numpy as np
 import pandas as pd
@@ -19,12 +39,18 @@ warnings.filterwarnings('ignore')
 # ================================
 # CONFIGURATION
 # ================================
+# Root of the unpacked "efbc_PlotData" archive; override with EFBC_PLOTDATA_DIR.
+# Defaults to the folder holding this script.
+DATA_DIR = os.environ.get('EFBC_PLOTDATA_DIR', os.path.dirname(os.path.abspath(__file__)))
+FIG_DIR = os.path.join(DATA_DIR, 'Figure_1')
+OUTPUT_DIR = os.environ.get('EFBC_OUTPUT_DIR', os.path.join(FIG_DIR, 'output'))
+
 CONFIG = {
     'paths': {
-        'cascade_bias': r'F:\Kody\Data\6_QDM_DF_Statics\1_Magnitude\6_SimHis_ObHis_Bias_GloPlot\Bias.tif',
-        'vic_bias': r'F:\Kody\Data\6_QDM_DF_Statics\3_VIC_DF\1_BiasCal\100a_bias.tif',
-        'climate_zones': r'E:\Code\Pycharm\DF_UnCC\Data\ClimateZone\koppen_geiger_GloH20tif\ClimateZone5ClassMerge.shp',
-        'output_dir': r'F:\Kody\Data\6_QDM_DF_Statics\8_PlotOptimized\3.1_Results-Continent'
+        'cascade_bias': os.path.join(FIG_DIR, 'uncorrected-cascade_flood-magnitude-bias-ratio.tif'),
+        'vic_bias': os.path.join(FIG_DIR, 'GRADES_flood-magnitude-bias-ratio.tif'),
+        'climate_zones': os.path.join(FIG_DIR, 'climate-zones_Koppen-Geiger-5class.shp'),
+        'output_dir': OUTPUT_DIR
     },
     'models': {
         'Cascade': {'color': '#E07B39', 'label': 'Uncorrected'},
@@ -421,10 +447,14 @@ def create_composite_figure(method='mean'):
 
     # --- Continent Mask ---
     print("  > Rasterizing continents at full resolution...")
-    try:
-        world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
-    except Exception:
-        world = gpd.read_file("naturalearth_lowres")
+    ne_path = os.environ.get('NATURALEARTH_SHP')
+    if ne_path:
+        world = gpd.read_file(ne_path)
+    else:
+        try:
+            world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+        except Exception:
+            world = gpd.read_file("naturalearth_lowres")
 
     world_filtered, cont_labels_map = build_continent_geodata(world)
     continent_raster_full = create_raster_mask(
