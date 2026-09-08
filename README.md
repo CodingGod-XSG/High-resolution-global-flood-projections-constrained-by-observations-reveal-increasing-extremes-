@@ -26,10 +26,23 @@ observation-based historical benchmarks:
 `Q_future_corrected = Q_obs_hist × (Q_sim_future / Q_sim_hist)`  
 Target scenario: SSP5-8.5, far-future period (2051–2100).
 
+### Figures (`plotting/`)
+Scripts that reproduce the three main figures from the projection outputs.
+
+| Script | Figure | Content |
+|--------|--------|---------|
+| `plotting/Figure1.py` | Fig. 1 | Global flood-magnitude bias ratio (uncorrected cascade vs GRADES), with box plots by climate zone and by continent |
+| `plotting/Figure2.py` | Fig. 2 | Multi-model uncertainty (coefficient of variation) maps, with climate-zone, continental, watershed-scale and per-river breakdowns |
+| `plotting/Figure3.py` | Fig. 3 | Flood return-period change: corrected map, difference map, and signed-difference box plots / under- vs over-estimation stacked bars by climate zone and continent |
+
+Maps use a 25× block resample for display; statistics use every native 1-km pixel.
+The input rasters and the per-region statistics tables these scripts read/write are
+archived separately (see Data Sources).
+
 ## Dependencies
 ```
 Python 3.x
-numpy, pandas, scikit-learn, rasterio, joblib, tqdm
+numpy, pandas, scikit-learn, rasterio, joblib, tqdm, matplotlib, geopandas
 ```
 
 ## Data Sources
