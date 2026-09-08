@@ -52,10 +52,16 @@ Continent masks come from Natural Earth via `geopandas`; on `geopandas` ≥ 1.0 
 `NATURALEARTH_SHP` to a local `ne_110m_admin_0_countries.shp`.
 
 ## Dependencies
+Python >= 3.9 (developed and tested on 3.9.19). Tested package versions:
+
 ```
-Python 3.x
-numpy, pandas, scikit-learn, rasterio, joblib, tqdm, matplotlib, geopandas
+numpy 1.21.5, pandas 1.4.4, scikit-learn 1.3.0, rasterio 1.3.9,
+joblib 1.4.2, tqdm 4.64.1, matplotlib 3.7.1, geopandas 0.13.2, openpyxl 3.0.10
 ```
+
+geopandas <= 0.14 is recommended so the bundled `naturalearth_lowres` dataset is
+available; on geopandas >= 1.0 set `NATURALEARTH_SHP` to a local
+`ne_110m_admin_0_countries.shp` (see `plotting/` script docstrings).
 
 ## Data Sources
 | Dataset | Reference |
