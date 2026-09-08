@@ -1,7 +1,8 @@
 # High-resolution global flood projections constrained by observations reveal increasing extremes
 
 Code for: "High-resolution global flood projections constrained by observations 
-reveal increasing extremes" (Nature Communications, under review)
+reveal increasing extremes", published in Communications Earth & Environment
+(Nature Portfolio).
 
 ## Overview
 This repository contains core code implementing the three-step framework for 
